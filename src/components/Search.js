@@ -1,4 +1,5 @@
 import React from 'react'
+import { Form } from 'semantic-ui-react'
 
 const Search = props => {
   return (
@@ -6,7 +7,8 @@ const Search = props => {
       <div className="ui icon input">
         <input className="prompt" onChange={props.onChange} />
         <i className="search icon" />
-      </div>
+      </div><br></br>
+      <Form.Button onClick={props.sortBy}>Sort by Health</Form.Button>
     </div>
   )
 }

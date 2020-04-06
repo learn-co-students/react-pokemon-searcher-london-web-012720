@@ -8,7 +8,19 @@ class PokemonPage extends React.Component {
 
   state = {
     pokemons: [],
-    search: ''
+    search: '',
+    sortByHealth: true
+  }
+
+  sortBy = () => {
+    this.setState({
+      sortByHealth: !this.state.sortByHealth
+    })
+    console.log(this.state.sortByHealth)
+  }
+
+  sortPokemon = (pokemonToSort) => {
+    return pokemonToSort.sort((a, b) => a.stats[a.stats.length -1].value < b.stats[b.stats.length -1].value ? 1 : -1)
   }
 
   onChange = (event) => {
@@ -32,15 +44,18 @@ class PokemonPage extends React.Component {
       ? this.state.pokemons.filter((pokemon) =>
     pokemon.name.includes(this.state.search)
     )
-    : this.state.pokemons;
+    : 
+    // this.state.pokemons;
 
+   this.state.sortByHealth ? this.sortPokemon(this.state.pokemons) : this.state.pokemons;
     return (
+      
       <Container>
         <h1>Pokemon Searcher</h1>
         <br />
         <PokemonForm addPokemon={this.addPokemon}/>
         <br />
-        <Search onChange={this.onChange} />
+        <Search onChange={this.onChange} sortBy={this.sortBy} sorted={this.state.sortByHealth}/>
         <br />
         {this.state.pokemons ? (
         <PokemonCollection pokemons={pokemonsSearch} />
