@@ -3,24 +3,28 @@ import PokemonCollection from './PokemonCollection'
 import PokemonForm from './PokemonForm'
 import Search from './Search'
 import { Container } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
 
 class PokemonPage extends React.Component {
 
   state = {
     pokemons: [],
     search: '',
-    sortByHealth: true
+    sortByHealth: false
   }
 
   sortBy = () => {
     this.setState({
       sortByHealth: !this.state.sortByHealth
     })
-    console.log(this.state.sortByHealth)
   }
 
-  sortPokemon = (pokemonToSort) => {
+  sortPokemon = (pokemonToSort, type) => {
+    if (type === "hp") {
     return pokemonToSort.sort((a, b) => a.stats[a.stats.length -1].value < b.stats[b.stats.length -1].value ? 1 : -1)
+    } else if (type === "id") {
+      return pokemonToSort.sort((a, b) => a.id < b.id ? 1 : -1)
+    }
   }
 
   onChange = (event) => {
@@ -39,15 +43,16 @@ class PokemonPage extends React.Component {
       .then(pokemons => this.setState({ pokemons: pokemons }))
   }
 
-  render() {
-    const pokemonsSearch = this.state.search
-      ? this.state.pokemons.filter((pokemon) =>
-    pokemon.name.includes(this.state.search)
-    )
-    : 
-    // this.state.pokemons;
+  filterPokemon = () => {
+    const filter = this.state.search 
+    ? this.state.pokemons.filter((pokemon) => pokemon.name.includes(this.state.search)) 
+    : this.state.pokemons;
+    
+    const sort = this.state.sortByHealth ? this.sortPokemon(filter, "hp") : this.sortPokemon(filter, "id")
+    return sort
+  }
 
-   this.state.sortByHealth ? this.sortPokemon(this.state.pokemons) : this.state.pokemons;
+  render() {
     return (
       
       <Container>
@@ -55,10 +60,12 @@ class PokemonPage extends React.Component {
         <br />
         <PokemonForm addPokemon={this.addPokemon}/>
         <br />
-        <Search onChange={this.onChange} sortBy={this.sortBy} sorted={this.state.sortByHealth}/>
+        <Search onChange={this.onChange}/>
+        <br />
+        <Form.Button onClick={this.sortBy}>Sort by Health</Form.Button>
         <br />
         {this.state.pokemons ? (
-        <PokemonCollection pokemons={pokemonsSearch} />
+        <PokemonCollection pokemons={this.filterPokemon()} />
         ) : null}
       </Container>
     )

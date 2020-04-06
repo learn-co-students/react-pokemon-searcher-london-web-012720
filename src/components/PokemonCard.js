@@ -16,8 +16,8 @@ class PokemonCard extends React.Component {
   const {pokemon} = this.props
   const {front, back} = pokemon.sprites
     return (
-      <Card>
-        <div onClick={this.handleClick}>
+      <Card onClick={this.handleClick}>
+        <div >
           <div className="image">
             {this.state.clicked ? 
             <img src={back} alt="oh no!"/> 
